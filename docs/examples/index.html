@@ -4,21 +4,173 @@
         <title>jQuery Bootstrap Stylize Selects</title>
         <link href="../libraries/bootstrap-css/bootstrap.css" rel="stylesheet" type="text/css">
         <link href="../libraries/bootstrap-css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+        <link href="../../src/css/jquery.bootstrap-stylize-selects.css" rel="stylesheet" type="text/css">
+        <!--<link href="../../src/css/jquery.bootstrap-stylize-selects-own-styles.css" rel="stylesheet" type="text/css">-->
         <script src="../libraries/jquery.min.js"></script>
+        <script src="../libraries/bootstrap.js"></script>
         <script type="text/javascript" src="../../src/js/jquery.bootstrap-stylize-selects.js"></script>
     </head>
-    <body>
-        <select name="" id="someselect">
-            <option value="{Value 1}">Value 1</option>
-            <option value="{Value 2}">Value 2</option>
-            <option value="{Value 3}">Value 3</option>
-            <option value="{Value 4}">Value 4</option>
-            <option value="{Value 5}">Value 5</option>
-            <option value="{Value 6}">Value 6</option>
-            <option value="{Value 7}">Value 7</option>
-            <option value="{Value 8}">Value 8</option>
-            <option value="{Value 9}">Value 9</option>
-            <option value="{Value 10}">Value 10</option>
-        </select>
+    <body style="width: 600px; margin: 0 auto;">
+    <select name="" id="">
+        <optgroup label="some label">
+            <option value="some_value1">value some1</option>
+            <option value="some_value2">value some2</option>
+            <option value="some_value3" disabled>value some3</option>
+            <option value="some_value4">value some4</option>
+        </optgroup>
+        <option value="some_value5" selected>value some5</option>
+        <option value="some_value6">value some6</option>
+        <option value="some_value7" disabled>value some7</option>
+        <option value="some_value8" disabled>value some8</option>
+        <option value="some_value9">value some9</option>
+        <option value="some_value10">value some10</option>
+    </select>
+
+    <br><br><br>
+
+
+
+        <div class="btn-group btn-group-block stylized-select">
+            <button type="button" class="btn btn-large dropdown-toggle" data-toggle="dropdown">
+                <span class="current-value">sky.fm</span>
+                <span class="btn btn-primary caret-block"><span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu items-primary">
+                <li class="optgroup-header"><a data-value="sky.fm">sky.fm</a></li>
+                <li><a data-value="archer-soft.com">archer-soft.com</a></li>
+                <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
+                <li><a data-value="agayun">agayun</a></li>
+                <li><a data-value="Google">Google</a></li>
+                <li><a data-value="test">test</a></li>
+                <li><a data-value="APP">APP</a></li>
+                <li class="disabled"><a data-value="APP/Computing">APP/Computing</a></li>
+                <li><a data-value="App notiffication">App notiffication</a></li>
+                <li><a data-value="Computing">Computing</a></li>
+                <li><a data-value="demo2(at)dimalina.com">demo2(at)dimalina.com</a></li>
+                <li><a data-value="Gadget">Gadget</a></li>
+                <li><a data-value="some new label">some new label</a></li>
+            </ul>
+        </div>
+
+        <br>
+
+        <div class="btn-group stylized-select">
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                <span class="current-value">sky.fm</span>
+                <span class="btn btn-danger caret-block"><span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu items-danger">
+                <li class="optgroup-header"><a data-value="sky.fm">sky.fm</a></li>
+                <li><a data-value="archer-soft.com">archer-soft.com</a></li>
+                <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
+                <li><a data-value="agayun">agayun</a></li>
+                <li><a data-value="Google">Google</a></li>
+                <li><a data-value="test">test</a></li>
+                <li><a data-value="APP">APP</a></li>
+                <li class="disabled"><a data-value="APP/Computing">APP/Computing</a></li>
+                <li><a data-value="App notiffication">App notiffication</a></li>
+                <li><a data-value="Computing">Computing</a></li>
+                <li><a data-value="demo2(at)dimalina.com">demo2(at)dimalina.com</a></li>
+                <li><a data-value="Gadget">Gadget</a></li>
+                <li><a data-value="some new label">some new label</a></li>
+            </ul>
+        </div>
+
+        <div class="btn-group stylized-select">
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                <span class="current-value">sky.fm</span>
+                <span class="btn btn-warning caret-block"><span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu items-warning">
+                <li><a data-value="archer-soft.com">archer-soft.com</a></li>
+                <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
+                <li><a data-value="agayun">agayun</a></li>
+                <li><a data-value="Google">Google</a></li>
+                <li><a data-value="test">test</a></li>
+                <li class="optgroup-header"><a data-value="sky.fm">sky.fm</a></li>
+                <li><a data-value="archer-soft.com">archer-soft.com</a></li>
+                <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
+                <li><a data-value="agayun">agayun</a></li>
+                <li><a data-value="Google">Google</a></li>
+                <li><a data-value="test">test</a></li>
+                <li><a data-value="APP">APP</a></li>
+                <li class="disabled"><a data-value="APP/Computing">APP/Computing</a></li>
+                <li><a data-value="App notiffication">App notiffication</a></li>
+                <li><a data-value="Computing">Computing</a></li>
+                <li><a data-value="demo2(at)dimalina.com">demo2(at)dimalina.com</a></li>
+                <li><a data-value="Gadget">Gadget</a></li>
+                <li><a data-value="some new label">some new label</a></li>
+            </ul>
+        </div>
+
+        <div class="btn-group stylized-select">
+            <button type="button" class="btn dropdown-toggle disabled" data-toggle="dropdown">
+                <span class="current-value">sky.fm</span>
+                <span class="btn btn-info caret-block"><span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu items-info">
+                <li class="optgroup-header"><a data-value="sky.fm">sky.fm</a></li>
+                <li><a data-value="archer-soft.com">archer-soft.com</a></li>
+                <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
+                <li><a data-value="agayun">agayun</a></li>
+                <li><a data-value="Google">Google</a></li>
+                <li><a data-value="test">test</a></li>
+                <li><a data-value="APP">APP</a></li>
+                <li class="disabled"><a data-value="APP/Computing">APP/Computing</a></li>
+                <li><a data-value="App notiffication">App notiffication</a></li>
+                <li><a data-value="Computing">Computing</a></li>
+                <li><a data-value="demo2(at)dimalina.com">demo2(at)dimalina.com</a></li>
+                <li><a data-value="Gadget">Gadget</a></li>
+                <li><a data-value="some new label">some new label</a></li>
+            </ul>
+        </div>
+
+        <br>
+
+        <div class="btn-group btn-group-block stylized-select">
+            <button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                <span class="current-value">sky.fm</span>
+                <span class="btn caret-block"><span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li class="optgroup-header"><a data-value="sky.fm">sky.fm</a></li>
+                <li><a data-value="archer-soft.com">archer-soft.com</a></li>
+                <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
+                <li><a data-value="agayun">agayun</a></li>
+                <li><a data-value="Google">Google</a></li>
+                <li><a data-value="test">test</a></li>
+                <li><a data-value="APP">APP</a></li>
+                <li class="disabled"><a data-value="APP/Computing">APP/Computing</a></li>
+                <li><a data-value="App notiffication">App notiffication</a></li>
+                <li><a data-value="Computing">Computing</a></li>
+                <li><a data-value="demo2(at)dimalina.com">demo2(at)dimalina.com</a></li>
+                <li><a data-value="Gadget">Gadget</a></li>
+                <li><a data-value="some new label">some new label</a></li>
+            </ul>
+        </div>
+
+        <br>
+
+        <div class="btn-group btn-group-block stylized-select">
+            <button type="button" class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                <span class="current-value">sky.fm</span>
+                <span class="btn btn-success caret-block"><span class="caret"></span></span>
+            </button>
+            <ul class="dropdown-menu items-success">
+                <li class="optgroup-header"><a data-value="sky.fm">sky.fm</a></li>
+                <li><a data-value="archer-soft.com">archer-soft.com</a></li>
+                <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
+                <li><a data-value="agayun">agayun</a></li>
+                <li><a data-value="Google">Google</a></li>
+                <li><a data-value="test">test</a></li>
+                <li><a data-value="APP">APP</a></li>
+                <li class="disabled"><a data-value="APP/Computing">APP/Computing</a></li>
+                <li><a data-value="App notiffication">App notiffication</a></li>
+                <li><a data-value="Computing">Computing</a></li>
+                <li><a data-value="demo2(at)dimalina.com">demo2(at)dimalina.com</a></li>
+                <li><a data-value="Gadget">Gadget</a></li>
+                <li><a data-value="some new label">some new label</a></li>
+            </ul>
+        </div>
     </body>
 </html>

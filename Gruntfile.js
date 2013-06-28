@@ -30,7 +30,10 @@ module.exports = function(grunt) {
         },
         watch: {
             css: {
-                files: 'dev/less/jquery.bootstrap-stylize-selects.less',
+                files: [
+                    'dev/less/jquery.bootstrap-stylize-selects.less',
+                    'dev/less/variables.less'
+                ],
                 tasks: ['concat', 'uglify', 'recess'],
                 options: {
                     livereload: true,

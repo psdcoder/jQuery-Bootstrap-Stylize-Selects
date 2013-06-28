@@ -1,0 +1,268 @@
+@import "variables.less";
+@import "mixins.less";
+
+.btn-group.stylized-select {
+    width: auto;
+    min-width: 160px;
+    margin-bottom: @baseLineHeight / 2;
+
+    &.btn-group-block{
+        display: block;
+        width: 100%;
+    }
+
+    &.open {
+        >.dropdown-toggle {
+            background-color: @inputBackground;
+            outline: 0;
+            outline: thin dotted \9; /* IE6-9 */
+            .border-bottom-radius(~"0 !important");
+            .box-shadow(~"inset 0 1px 3px 1px rgba(0,0,0,.1)");
+
+            .caret-block {
+                border-left: 1px solid @inputBorder;
+                .border-bottom-right-radius(~"0 !important");
+                background-color: @btnBackgroundHighlight;
+                background-image: none;
+                .box-shadow(~"inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05)");
+
+                &.btn-primary {
+                    background-color: @btnPrimaryBackgroundHighlight;
+                    .caret-left-border(@btnPrimaryBackgroundHighlight)
+                }
+                &.btn-warning{
+                    background-color: @btnWarningBackgroundHighlight;
+                    .caret-left-border(@btnWarningBackgroundHighlight)
+                }
+                &.btn-danger{
+                    background-color: @btnDangerBackgroundHighlight;
+                    .caret-left-border(@btnDangerBackgroundHighlight)
+                }
+                &.btn-success{
+                    background-color: @btnSuccessBackgroundHighlight;
+                    .caret-left-border(@btnSuccessBackgroundHighlight)
+                }
+                &.btn-info{
+                    background-color: @btnInfoBackgroundHighlight;
+                    .caret-left-border(@btnInfoBackgroundHighlight)
+                }
+                &.btn-inverse {
+                    background-color: @btnInverseBackgroundHighlight;
+                    .caret-left-border(@btnInverseBackgroundHighlight)
+                }
+            }
+        }
+    }
+
+    >.dropdown-toggle {
+        position: relative;
+        display: block;
+        width: 100%;
+        padding: 4px 6px;
+
+        color: @gray;
+        background-color: @inputBackground;
+        border: 1px solid @inputBorder;
+        outline: none;
+        z-index: 1;
+        background-image: none;
+
+        &.btn-large{
+            padding: 11px 6px;
+            .border-radius(@borderRadiusLarge);
+
+            .current-value{
+                font-size: @fontSizeLarge;
+            }
+
+            .caret-block{
+                width: 40px;
+                .border-right-radius(@borderRadiusLarge - 2px);
+                .caret{
+                    margin-top: 18px;
+                }
+            }
+        }
+
+        &.btn-small{
+            padding: 2px 6px;
+            .border-radius(@borderRadiusSmall);
+
+            .current-value{
+                font-size: @fontSizeSmall
+            }
+
+            .caret-block{
+                width: 24px;
+                .border-right-radius(@borderRadiusSmall - 2px);
+                .caret{
+                    margin-top: 10px;
+                }
+            }
+
+            & + .dropdown-menu > li > a{
+                font-size: @fontSizeSmall;
+            }
+        }
+
+        &.btn-mini{
+            padding: 0 6px;
+            .border-radius(@borderRadiusSmall);
+
+            .current-value{
+                font-size: @fontSizeMini;
+            }
+
+            .caret-block{
+                width: 20px;
+                .border-right-radius(@borderRadiusSmall - 2px);
+                .caret{
+                    margin-top: 8px;
+                }
+            }
+
+            & + .dropdown-menu > li > a{
+                font-size: @fontSizeSmall;
+            }
+        }
+
+        &.disabled{
+            .caret-block{
+                .disabled-dropdown-caret;
+
+                &.btn-primary {
+                    background-color: @btnPrimaryBackground;
+                }
+                &.btn-warning{
+                    background-color: @btnWarningBackground;
+                }
+                &.btn-danger{
+                    background-color: @btnDangerBackground;
+                }
+                &.btn-success{
+                    background-color: @btnSuccessBackground;
+                }
+                &.btn-info{
+                    background-color: @btnInfoBackground;
+                }
+                &.btn-inverse {
+                    background-color: @btnInverseBackground;
+                }
+            }
+        }
+
+        .border-radius(@inputBorderRadius);
+        .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+        .transition(~"border linear .2s, box-shadow linear .2s");
+
+        .current-value {
+            display: block;
+            margin: 0 27px 0 5px;
+            text-align: left;
+            font-size: @baseFontSize;
+            line-height: @baseLineHeight;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .caret-block {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display:block;
+            width: 26px;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+            .border-left-radius(0);
+            .border-right-radius(2px);
+
+            .caret{
+                margin-top: 11px;
+            }
+        }
+    }
+
+    >.dropdown-menu {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        .box-sizing(border-box);
+        .border-top-radius(0);
+        border-top: none;
+        overflow-y: auto;
+        margin-top: 0;
+
+
+        > li {
+            cursor: pointer;
+
+            >a {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            &.optgroup-header {
+                >a {
+                    margin: 0 5px;
+                    border-bottom: 1px solid @inputBorder;
+                    padding-left: 5px;
+                    color: @grayLight;
+                    cursor: default;
+
+                    &:hover,
+                    &:focus{
+                        background-color: @white !important;
+                        background-image: none !important;
+                    }
+                }
+            }
+
+
+            &.disabled{
+                >a{
+
+                    &:hover,
+                    &:focus{
+                        background-color: @white !important;
+                        background-image: none !important;
+                    }
+                }
+            }
+        }
+
+        &.items-primary {
+            > li > a:hover {
+                .gradient-background(@btnPrimaryBackgroundHighlight, darken(@btnPrimaryBackgroundHighlight, 5%));
+            }
+        }
+        &.items-warning{
+            > li > a:hover {
+                .gradient-background(@btnWarningBackgroundHighlight, darken(@btnWarningBackgroundHighlight, 5%));
+            }
+        }
+        &.items-danger{
+            > li > a:hover {
+                .gradient-background(@btnDangerBackgroundHighlight, darken(@btnDangerBackgroundHighlight, 5%));
+            }
+        }
+        &.items-success{
+            > li > a:hover {
+                .gradient-background(@btnSuccessBackgroundHighlight, darken(@btnSuccessBackgroundHighlight, 5%));
+            }
+        }
+        &.items-info{
+            > li > a:hover {
+                .gradient-background(@btnInfoBackgroundHighlight, darken(@btnInfoBackgroundHighlight, 5%));
+            }
+        }
+        &.items-inverse {
+            > li > a:hover {
+                .gradient-background(@btnInverseBackgroundHighlight, darken(@btnInverseBackgroundHighlight, 5%));
+            }
+        }
+    }
+}
