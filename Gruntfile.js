@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         uglify: {
             main: {
                 files: {
-                    'src/js/scripts.min.js': '<%= concat.main.dest %>'
+                    'src/js/jquery.bootstrap-stylize-selects.min.js': '<%= concat.main.dest %>'
                 }
             }
         },
@@ -32,7 +32,8 @@ module.exports = function(grunt) {
             css: {
                 files: [
                     'dev/less/jquery.bootstrap-stylize-selects.less',
-                    'dev/less/variables.less'
+                    'dev/less/variables.less',
+                    '<%= concat.main.src %>'
                 ],
                 tasks: ['concat', 'uglify', 'recess'],
                 options: {

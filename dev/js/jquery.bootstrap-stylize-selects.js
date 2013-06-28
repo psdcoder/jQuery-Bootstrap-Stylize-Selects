@@ -1,13 +1,71 @@
 (function($){
     var options,
-        namespace = 'stylizedSelect',
         defaults = {
             width: 'auto',
             maxShow: 'auto',
+            style: null,
+            size: null,
             click: null
-        };
+        },
+        namespace = 'stylizedSelect',
+        mainClass = 'stylized-select',
+        tabIndex = 0;
 
     var protectedMethods = {
+        buildDropdown: function(elements){
+            var dropdown = document.createElement('ul'),
+                additionalDropdownClass = !(options.style === null) ? ' items-' + options.style : '';
+
+            dropdown.className = 'dropdown-menu' + additionalDropdownClass;
+
+            var $elementsLength = elements.length;
+
+            for (var i = 0; i < $elementsLength; i++) {
+                if (elements[i].nodeName.toLowerCase() === 'optgroup') {
+                    var optgroup = elements[i].children,
+                        optgroupDisabled = elements[i].disabled,
+                        optgroupLength = optgroup.length;
+
+                    var header = document.createElement('li'),
+                        headerInnerA = document.createElement('a'),
+                        divider = document.createElement('li');
+
+                    header.className = 'optgroup-header';
+                    headerInnerA .innerText = elements[i].label;
+
+                    header.appendChild(headerInnerA);
+                    dropdown.appendChild(header);
+
+                    for (var j = 0; j < optgroupLength; j++) {
+                        dropdown.appendChild(this.buildOneOption(optgroup[j], optgroupDisabled));
+                    }
+
+                    divider.className = 'divider';
+                    dropdown.appendChild(divider);
+                } else {
+                    dropdown.appendChild(this.buildOneOption(elements[i]));
+                }
+            }
+
+            tabIndex = 0;
+            return dropdown;
+        },
+        buildOneOption: function(option, disabled){
+            var li = document.createElement('li'),
+                innerA = document.createElement('a');
+
+            if (option.disabled || disabled) {
+                li.className = 'disabled';
+            }
+
+            innerA.setAttribute('data-value', option.value);
+            innerA.innerText = option.innerText;
+            innerA.tabIndex = ++tabIndex;
+
+            li.appendChild(innerA);
+
+            return li;
+        },
         bindHandlers: function(){
 //            var $container = $('.' + options.containerClass);
 
@@ -40,6 +98,7 @@
         init : function( params ) {
             options = $.extend(defaults, params);
 
+
             this.each(function(){
                 var $this = $(this),
                     data = $this.data(namespace);
@@ -49,37 +108,50 @@
                         initialized: true
                     });
 
-                    var $childrens = $this.children();
+                    var mainContainer = document.createElement('div'),
+                        dropdownToggle = document.createElement('button'),
+                        currentValue = document.createElement('span'),
+                        dropdownToggleButton = document.createElement('span'),
+                        dropdownToggleButtonAdditionalClass = !(options.style === null) ? ' btn-' + options.style : '',
+                        dropdownToggleAdditionalClass = '',
+                        mainContainerAdditionalClass = '';
+
+                    //check all additional styles
+                    switch (options.width) {
+                        case 'auto':
+                            break;
+                        case 'block':
+                            mainContainerAdditionalClass = ' btn-group-block';
+                            break;
+                        default:
+                            mainContainer.style.width = options.width;
+                    }
+                    dropdownToggleAdditionalClass += !(options.size === null) ? ' btn-' + options.size : '';
+                    dropdownToggleAdditionalClass += this.disabled ? ' disabled' : '';
+
+                    //set all attributes
+                    mainContainer.className = 'btn-group ' + mainContainerAdditionalClass + ' ' + mainClass;
+
+                    dropdownToggle.className = 'btn dropdown-toggle' + dropdownToggleAdditionalClass;
+                    dropdownToggle.setAttribute('data-toggle', 'dropdown');
+
+                    currentValue.className = 'current-value';
+                    currentValue.innerText = $('option[value="' +$this.val() + '"]', $this).text();
+
+                    dropdownToggleButton.className = 'btn caret-block' + dropdownToggleButtonAdditionalClass;
+                    dropdownToggleButton.innerHTML = '<span class="caret"></span>';
+
+                    //construct all
+                    dropdownToggle.appendChild(currentValue);
+                    dropdownToggle.appendChild(dropdownToggleButton);
+
+                    mainContainer.appendChild(dropdownToggle);
+                    mainContainer.appendChild(protectedMethods.buildDropdown($this.children()));
+
+                    $this.hide();
+                    $this.after($(mainContainer));
                 }
             });
-
-//            <div class="btn-group stylized-select">
-//                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-//                    <span class="current-value">sky.fm</span>
-//                    <span class="btn btn-warning caret-block"><span class="caret"></span></span>
-//                </button>
-//                <ul class="dropdown-menu items-warning">
-//                    <li><a data-value="archer-soft.com">archer-soft.com</a></li>
-//                    <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
-//                    <li><a data-value="agayun">agayun</a></li>
-//                    <li><a data-value="Google">Google</a></li>
-//                    <li><a data-value="test">test</a></li>
-//                    <li class="optgroup-header"><a data-value="sky.fm">sky.fm</a></li>
-//                    <li><a data-value="archer-soft.com">archer-soft.com</a></li>
-//                    <li><a data-value="dimalinaWOW">dimalinaWOW</a></li>
-//                    <li><a data-value="agayun">agayun</a></li>
-//                    <li><a data-value="Google">Google</a></li>
-//                    <li><a data-value="test">test</a></li>
-//                    <li><a data-value="APP">APP</a></li>
-//                    <li class="disabled"><a data-value="APP/Computing">APP/Computing</a></li>
-//                    <li><a data-value="App notiffication">App notiffication</a></li>
-//                    <li><a data-value="Computing">Computing</a></li>
-//                    <li><a data-value="demo2(at)dimalina.com">demo2(at)dimalina.com</a></li>
-//                    <li><a data-value="Gadget">Gadget</a></li>
-//                    <li><a data-value="some new label">some new label</a></li>
-//                </ul>
-//            </div>
-
 
             protectedMethods.bindHandlers();
             return this;

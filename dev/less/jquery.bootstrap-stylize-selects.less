@@ -67,6 +67,11 @@
         z-index: 1;
         background-image: none;
 
+        &:hover,
+        &:focus{
+            .box-shadow(~"inset 0 1px 3px 1px rgba(0,0,0,.1)");
+        }
+
         &.btn-large{
             padding: 11px 6px;
             .border-radius(@borderRadiusLarge);
@@ -205,6 +210,13 @@
                 text-overflow: ellipsis;
             }
 
+            &.divider{
+                height: 0;
+                border-bottom: 1px solid @inputBorder;
+                margin: 3px 5px 10px 5px;
+                padding: 0;
+            }
+
             &.optgroup-header {
                 >a {
                     margin: 0 5px;
@@ -224,43 +236,54 @@
 
             &.disabled{
                 >a{
+                    outline: none;
 
                     &:hover,
                     &:focus{
                         background-color: @white !important;
                         background-image: none !important;
                     }
+
+                    &:focus{
+                        text-decoration: underline;
+                    }
                 }
             }
         }
 
         &.items-primary {
-            > li > a:hover {
+            > li > a:hover,
+            > li > a:focus {
                 .gradient-background(@btnPrimaryBackgroundHighlight, darken(@btnPrimaryBackgroundHighlight, 5%));
             }
         }
         &.items-warning{
-            > li > a:hover {
+            > li > a:hover,
+            > li > a:focus {
                 .gradient-background(@btnWarningBackgroundHighlight, darken(@btnWarningBackgroundHighlight, 5%));
             }
         }
         &.items-danger{
-            > li > a:hover {
+            > li > a:hover,
+            > li > a:focus {
                 .gradient-background(@btnDangerBackgroundHighlight, darken(@btnDangerBackgroundHighlight, 5%));
             }
         }
         &.items-success{
-            > li > a:hover {
+            > li > a:hover,
+            > li > a:focus {
                 .gradient-background(@btnSuccessBackgroundHighlight, darken(@btnSuccessBackgroundHighlight, 5%));
             }
         }
         &.items-info{
-            > li > a:hover {
+            > li > a:hover,
+            > li > a:focus {
                 .gradient-background(@btnInfoBackgroundHighlight, darken(@btnInfoBackgroundHighlight, 5%));
             }
         }
         &.items-inverse {
-            > li > a:hover {
+            > li > a:hover,
+            > li > a:focus {
                 .gradient-background(@btnInverseBackgroundHighlight, darken(@btnInverseBackgroundHighlight, 5%));
             }
         }
