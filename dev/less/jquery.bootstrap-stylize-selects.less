@@ -1,6 +1,10 @@
 @import "variables.less";
 @import "mixins.less";
 
+.btn-group + .btn-group.btn-group-block{
+    margin-left: 0;
+}
+
 .btn-group.stylized-select {
     width: auto;
     min-width: 160px;
@@ -208,12 +212,13 @@
             >a {
                 overflow: hidden;
                 text-overflow: ellipsis;
+                outline: none;
             }
 
             &.divider{
                 height: 0;
                 border-bottom: 1px solid @inputBorder;
-                margin: 3px 5px 10px 5px;
+                margin: 0 5px 10px 5px;
                 padding: 0;
             }
 
@@ -222,6 +227,7 @@
                     margin: 0 5px;
                     border-bottom: 1px solid @inputBorder;
                     padding-left: 5px;
+                    padding-bottom: 0;
                     color: @grayLight;
                     cursor: default;
 
@@ -236,12 +242,14 @@
 
             &.disabled{
                 >a{
-                    outline: none;
-
                     &:hover,
                     &:focus{
                         background-color: @white !important;
                         background-image: none !important;
+                    }
+
+                    &:active{
+                        text-decoration: none !important;
                     }
 
                     &:focus{

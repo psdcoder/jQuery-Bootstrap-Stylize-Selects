@@ -12,26 +12,63 @@
     </head>
     <body style="width: 600px; margin: 0 auto;">
     <br><br>
-    <select name="" id="">
+    <select name="" id="select1">
         <optgroup label="some label">
             <option value="some_value1">value some1</option>
-            <option value="some_value2">value some2</option>
+            <option value="some_value2" selected>value some2</option>
             <option value="some_value3">value some3</option>
             <option value="some_value4">value some4</option>
         </optgroup>
-        <option value="some_value5">value some5</option>
-        <option value="some_value6">value some6</option>
-        <option value="some_value7" disabled>value some7</option>
-        <option value="some_value8" disabled>value some8</option>
-        <option value="some_value9">value some9</option>
-        <option value="some_value10">value some10</option>
     </select>
+
+    <select name="" id="select2">
+        <optgroup label="some label">
+            <option value="some_value1">value some1</option>
+            <option value="some_value2" selected>value some2</option>
+            <option value="some_value3">value some3</option>
+            <option value="some_value4">value some4</option>
+        </optgroup>
+    </select>
+
     <script type="text/javascript">
         $('select').stylizeSelects({
-            style: 'success',
+            style: 'inverse',
+            notStyleList: false,
             size: 'large',
-            width: 'block'
+            width: 'block',
+            dropdownMaxHeight: '350px',
+            shown: function(e) {
+
+            },
+            onClick: function(e){
+                console.log(e);
+                console.log(this);
+            }
         });
+
+        setTimeout(function(){
+//            console.log($('select').stylizeSelects('val'));
+            $('#select1').stylizeSelects('add', [
+                {
+                    value: 'aaa',
+                    innerText: 'aaaaaaaaa'
+                },
+                {
+                    value: 'bbb',
+                    innerText: 'bbbbbbbbbb',
+                    disabled: true
+                },
+                {
+                    value: 'ccc',
+                    innerText: 'cccccccccc',
+                    className: 'someclass'
+                }
+            ]
+, 'some_value1'
+            );
+        }, 2000);
+
+
     </script>
     </body>
 </html>
