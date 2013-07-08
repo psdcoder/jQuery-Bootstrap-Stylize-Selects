@@ -1,7 +1,37 @@
+//Throttle method from underscore.js
+
+function throttle (func, wait, options) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    options || (options = {});
+    var later = function() {
+        previous = options.leading === false ? 0 : new Date;
+        timeout = null;
+        result = func.apply(context, args);
+    };
+    return function() {
+        var now = new Date;
+        if (!previous && options.leading === false) previous = now;
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0) {
+            clearTimeout(timeout);
+            timeout = null;
+            previous = now;
+            result = func.apply(context, args);
+        } else if (!timeout && options.trailing !== false) {
+            timeout = setTimeout(later, remaining);
+        }
+        return result;
+    };
+}
 (function ($) {
     var options,
         defaults = {
             width: 'auto', // 'auto' - means displays as inline-block || 'block' - displays as block element || '100px' - size
+            autoResize: true, // auto resize height of dropdown when fired window.onresize or window.onscroll events
             dropdownMaxHeight: 'auto', // 'auto' || '200px' - size
             style: null, // 'info' || 'primary' || 'warning' || 'danger' || 'success' || 'inverse'
             notStyleList: false, // stylize also dropdown items or not
@@ -16,50 +46,49 @@
     var protectedMethods = {
         buildDropdown: function (elements) {
             var dropdown = document.createElement('ul'),
+                dropdownFragment = document.createDocumentFragment(), //buffer for new items
                 additionalDropdownClass = (options.style !== null && !options.notStyleList) ? ' items-' + options.style : '';
 
             dropdown.className = 'dropdown-menu' + additionalDropdownClass;
 
             if (options.dropdownMaxHeight !== 'auto') {
-                dropdown.style.maxHeight = options.dropdownMaxHeight;
+                dropdown.style.maxHeight = options.dropdownMaxHeight + 'px';
             }
 
-            var $elementsLength = elements.length;
-
-            for (var i = 0; i < $elementsLength; i++) {
+            for (var i = 0, elementsLength = elements.length; i < elementsLength; i++) {
                 if (elements[i].nodeName.toLowerCase() === 'optgroup') {
                     var optgroup = elements[i].children,
                         optgroupDisabled = elements[i].disabled,
                         optgroupLength = optgroup.length;
 
                     var header = document.createElement('li'),
-                        headerInnerA = document.createElement('a'),
-                        divider = document.createElement('li');
+                        headerInnerLink = document.createElement('a'),
+                        dividerElement = document.createElement('li');
 
                     header.className = 'optgroup-header';
-                    headerInnerA.innerText = elements[i].label;
-
-                    header.appendChild(headerInnerA);
-                    dropdown.appendChild(header);
+                    header.appendChild(headerInnerLink);
+                    headerInnerLink.innerText = elements[i].label;
+                    dropdownFragment.appendChild(header);
 
                     for (var j = 0; j < optgroupLength; j++) {
-                        dropdown.appendChild(this.buildOneOption(optgroup[j], optgroupDisabled));
+                        dropdownFragment.appendChild(this.buildOneDropdownItem(optgroup[j], optgroupDisabled));
                     }
 
-                    if ((i + 1) < $elementsLength && elements[i + 1].nodeName.toLowerCase() !== 'optgroup') {
-                        divider.className = 'divider';
-                        dropdown.appendChild(divider);
+                    if ((i + 1) < elementsLength && elements[i + 1].nodeName.toLowerCase() !== 'optgroup') {
+                        dividerElement.className = 'divider';
+                        dropdownFragment.appendChild(dividerElement);
                     }
                 } else {
-                    dropdown.appendChild(this.buildOneOption(elements[i]));
+                    dropdownFragment.appendChild(this.buildOneDropdownItem(elements[i]));
                 }
             }
+            dropdown.appendChild(dropdownFragment);
 
             return dropdown;
         },
-        buildOneOption: function (option, disabled) {
+        buildOneDropdownItem: function (option, disabled) {
             var li = document.createElement('li'),
-                innerA = document.createElement('a');
+                innerLink = document.createElement('a');
 
             if (option.disabled || disabled) {
                 li.className = 'disabled';
@@ -69,19 +98,19 @@
                 li.className = (li.className !== '' ? li.className + ' ' : '') + option.className;
             }
 
-            innerA.setAttribute('data-value', option.value);
-            innerA.innerText = option.innerText;
-            innerA.tabIndex = (option.disabled || disabled) ? -1 : 0;
+            innerLink.setAttribute('data-value', option.value);
+            innerLink.innerText = option.innerText;
+            innerLink.tabIndex = (option.disabled || disabled) ? -1 : 0;
 
-            li.appendChild(innerA);
+            li.appendChild(innerLink);
 
             return li;
         },
-        buildOneClearOption: function (optionData) {
+        buildOneOption: function (optionData) {
             var option = document.createElement('option');
 
             if (optionData.innerText) {
-               option.innerText = optionData.innerText;
+                option.innerText = optionData.innerText;
             }
 
             if (optionData.disabled) {
@@ -121,14 +150,38 @@
             });
 
             //for select items from keyboard
-            $dropdown.on('keyup' + '.' + namespace, 'a', function(e) {
+            $dropdown.on('keyup' + '.' + namespace, 'a', function (e) {
                 var code = e.which;
                 if (code === 13) {
                     $(this).trigger('click');
                 }
             });
+
+            if (options.autoResize) {
+                this.setMaxHeight();
+
+                $(window).on(
+                    'scroll' + '.' + namespace + ' resize' + '.' + namespace,
+                    throttle(this.setMaxHeight, 300)
+                );
+            }
         },
-        getItemByValue: function(context, value) {
+        setMaxHeight: function() {
+            var $dropdown =  $('.dropdown-menu', $('.' + mainClass)),
+                windowHeight = $(window).height(),
+                dropdownHeight = $dropdown.height(),
+                dropdownMargins = $dropdown.outerHeight() - dropdownHeight,
+                dropdownOffset = $dropdown.offset(),
+                toBottom = windowHeight - dropdownHeight - dropdownMargins - dropdownOffset.top;
+
+            if (toBottom <= 0) {
+                $dropdown.css('maxHeight', windowHeight - dropdownOffset.top - dropdownMargins);
+            } else if (toBottom + dropdownHeight < options.dropdownMaxHeight) {
+                console.log('aaaa');
+                $dropdown.css('maxHeight', options.dropdownMaxHeight);
+            }
+        },
+        getItemByValue: function (context, value) {
             if (!$.isArray(value)) {
                 return $('a[data-value="' + value + '"]', $currentDropdown)[0];
             } else {
@@ -141,14 +194,14 @@
                 return tempArray;
             }
         },
-        checkOnSelected: function(value) {
+        checkOnSelected: function (value) {
             if ($currentSelect.val() === value) {
                 var $option = $('option:first', $currentSelect);
                 $option.prop('selected', true);
                 $('.current-value', $currentDropdown).text($('a[data-value="' + $option.attr('value') + '"]', $currentDropdown).text());
             }
         },
-        setCurrentDropdown: function() {
+        setCurrentDropdown: function () {
             $currentSelect = $(this);
             $currentDropdown = $(this.next('.' + mainClass)[0]);
         }
@@ -171,7 +224,7 @@
                         dropdownToggle = document.createElement('button'),
                         currentValue = document.createElement('span'),
                         dropdownToggleButton = document.createElement('div'),
-                        dropdownToggleButtonAdditionalClass = !(options.style === null) ? ' btn-' + options.style : '',
+                        dropdownToggleButtonAdditionalClass = options.style === null ? '' : ' btn-' + options.style,
                         dropdownToggleAdditionalClass = '',
                         mainContainerAdditionalClass = '';
 
@@ -185,7 +238,7 @@
                         default:
                             mainContainer.style.width = options.width;
                     }
-                    dropdownToggleAdditionalClass += !(options.size === null) ? ' btn-' + options.size : '';
+                    dropdownToggleAdditionalClass += options.size === null ? '' : ' btn-' + options.size;
                     dropdownToggleAdditionalClass += this.disabled ? ' disabled' : '';
 
                     //set all attributes
@@ -205,6 +258,7 @@
                     dropdownToggle.appendChild(dropdownToggleButton);
 
                     mainContainer.appendChild(dropdownToggle);
+                    //noinspection JSValidateTypes
                     mainContainer.appendChild(protectedMethods.buildDropdown($this.children()));
 
                     $this.hide();
@@ -216,18 +270,22 @@
             return this;
         },
         val: function (value) {
-            if (value ===  undefined || typeof value !== 'string') {
+            if (value === undefined || typeof value !== 'string') {
                 return this.val();
             } else {
-                var $a  = $(protectedMethods.getItemByValue(this, value));
+                var $a = $(protectedMethods.getItemByValue(this, value));
 
                 if ($a.length > 0) {
                     this.val(value);
                     $('.current-value', $currentDropdown).text($a.text());
+
+                    return true;
+                } else {
+                    return false;
                 }
             }
         },
-        add: function (option, after) {
+        add: function (option, insertAfter) {
             if ($.isPlainObject(option)) {
                 option = [option];
             }
@@ -236,15 +294,15 @@
                 var bufferLIs = document.createDocumentFragment(),
                     bufferOptions = document.createDocumentFragment();
 
-                $.each(option, function(i, e) {
-                    bufferLIs.appendChild(protectedMethods.buildOneOption(e));
-                    bufferOptions.appendChild(protectedMethods.buildOneClearOption(e));
+                $.each(option, function (i, e) {
+                    bufferLIs.appendChild(protectedMethods.buildOneDropdownItem(e));
+                    bufferOptions.appendChild(protectedMethods.buildOneOption(e));
                 });
 
-                if (after && typeof after === 'string') {
-                    var afterItemDropdown = $('a[data-value="' + after + '"]', $currentDropdown).parent('li')[0],
+                if (insertAfter && typeof insertAfter === 'string') {
+                    var afterItemDropdown = $('a[data-value="' + insertAfter + '"]', $currentDropdown).parent('li')[0],
                         afterParentDropdown = afterItemDropdown.parentNode,
-                        afterItemSelect = $('option[value="' + after + '"]', $currentSelect)[0],
+                        afterItemSelect = $('option[value="' + insertAfter + '"]', $currentSelect)[0],
                         afterParentSelect = afterItemSelect.parentNode;
 
                     afterParentDropdown.insertBefore(bufferLIs, afterItemDropdown.nextSibling);
@@ -258,14 +316,14 @@
             }
         },
         remove: function (value) {
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 value = [value];
             }
 
             if ($.isArray(value)) {
-                var a  = protectedMethods.getItemByValue(this, value);
+                var a = protectedMethods.getItemByValue(this, value);
 
-                $.each(a, function(i, e) {
+                $.each(a, function (i, e) {
                     var $a = $(e),
                         value = $a.data('value');
 
@@ -284,14 +342,14 @@
             }
         },
         hide: function (value) {
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 value = [value];
             }
 
             if ($.isArray(value)) {
-                var a  = protectedMethods.getItemByValue(this, value);
+                var a = protectedMethods.getItemByValue(this, value);
 
-                $.each(a, function(i, e) {
+                $.each(a, function (i, e) {
                     var $a = $(e);
 
                     $a.attr('tabIndex', -1);
@@ -304,14 +362,14 @@
             }
         },
         show: function (value) {
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 value = [value];
             }
 
             if ($.isArray(value)) {
-                var a  = protectedMethods.getItemByValue(this, value);
+                var a = protectedMethods.getItemByValue(this, value);
 
-                $.each(a, function(i, e) {
+                $.each(a, function (i, e) {
                     var $a = $(e);
 
                     $a.attr('tabIndex', 0);
@@ -322,14 +380,14 @@
             }
         },
         disable: function (value) {
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 value = [value];
             }
 
             if ($.isArray(value)) {
-                var a  = protectedMethods.getItemByValue(this, value);
+                var a = protectedMethods.getItemByValue(this, value);
 
-                $.each(a, function(i, e) {
+                $.each(a, function (i, e) {
                     var $a = $(e);
 
                     $a.attr('tabIndex', -1);
@@ -338,29 +396,29 @@
                     protectedMethods.checkOnSelected($a.data('value'));
                 });
 
-                $.each(value, function(i , e) {
-                   $('option[value="' + e + '"]', $currentSelect).prop('disabled', true);
+                $.each(value, function (i, e) {
+                    $('option[value="' + e + '"]', $currentSelect).prop('disabled', true);
                 });
             } else {
                 $.error('You must pass value(s) which must be disabled');
             }
         },
         enable: function (value) {
-            if (typeof value == 'string') {
+            if (typeof value === 'string') {
                 value = [value];
             }
 
             if ($.isArray(value)) {
-                var a  = protectedMethods.getItemByValue(this, value);
+                var a = protectedMethods.getItemByValue(this, value);
 
-                $.each(a, function(i, e) {
+                $.each(a, function (i, e) {
                     var $a = $(e);
 
                     $a.attr('tabIndex', 0);
                     $a.parent('li').removeClass('disabled');
                 });
 
-                $.each(value, function(i , e) {
+                $.each(value, function (i, e) {
                     $('option[value="' + e + '"]', $currentSelect).prop('disabled', false);
                 });
             } else {
@@ -374,7 +432,7 @@
                 $this.next('.' + mainClass).remove();
                 $this.data(namespace, null);
                 $this.show();
-            })
+            });
 
         }
     };

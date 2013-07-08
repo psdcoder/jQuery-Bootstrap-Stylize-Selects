@@ -13,62 +13,44 @@
     <body style="width: 600px; margin: 0 auto;">
     <br><br>
     <select name="" id="select1">
-        <optgroup label="some label">
-            <option value="some_value1">value some1</option>
-            <option value="some_value2" selected>value some2</option>
-            <option value="some_value3">value some3</option>
-            <option value="some_value4">value some4</option>
+        <optgroup label="Group 1">
+            <option value="val1">Some value1</option>
+            <option value="val2">Some value2</option>
+            <option value="val3">Some value3</option>
+            <option value="val4">Some value4</option>
         </optgroup>
-    </select>
-
-    <select name="" id="select2">
-        <optgroup label="some label">
-            <option value="some_value1">value some1</option>
-            <option value="some_value2" selected>value some2</option>
-            <option value="some_value3">value some3</option>
-            <option value="some_value4">value some4</option>
+        <option value="val5" disabled>Some value5</option>
+        <option value="val6">Some value6</option>
+        <option value="val7">Some value7</option>
+        <option value="val8">Some value8</option>
+        <option value="val9" disabled>Some value9</option>
+        <option value="val10">Some value10</option>
+        <option value="val11" disabled>Some value11</option>
+        <optgroup label="Group 2">
+            <option value="val12">Some value12</option>
+            <option value="val13">Some value13</option>
+            <option value="val14">Some value14</option>
+            <option value="val15">Some value15</option>
+            <option value="val16">Some value16</option>
+            <option value="val17">Some value17</option>
         </optgroup>
+        <option value="val18">Some value18</option>
+        <option value="val19">Some value19</option>
+        <option value="val20">Some value20</option>
     </select>
 
     <script type="text/javascript">
         $('select').stylizeSelects({
-            style: 'inverse',
+            style: 'danger',
             notStyleList: false,
             size: 'large',
             width: 'block',
-            dropdownMaxHeight: '350px',
-            shown: function(e) {
-
-            },
+            dropdownMaxHeight: '350',
             onClick: function(e){
                 console.log(e);
                 console.log(this);
             }
         });
-
-        setTimeout(function(){
-//            console.log($('select').stylizeSelects('val'));
-            $('#select1').stylizeSelects('add', [
-                {
-                    value: 'aaa',
-                    innerText: 'aaaaaaaaa'
-                },
-                {
-                    value: 'bbb',
-                    innerText: 'bbbbbbbbbb',
-                    disabled: true
-                },
-                {
-                    value: 'ccc',
-                    innerText: 'cccccccccc',
-                    className: 'someclass'
-                }
-            ]
-, 'some_value1'
-            );
-        }, 2000);
-
-
     </script>
     </body>
 </html>

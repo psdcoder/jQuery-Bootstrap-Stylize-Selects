@@ -3,6 +3,7 @@ module.exports = function(grunt) {
         concat: {
             main: {
                 src: [
+                    'dev/js/additional/underscore.throttle.js',
                     'dev/js/jquery.bootstrap-stylize-selects.js'
                 ],
                 dest: 'src/js/jquery.bootstrap-stylize-selects.js'
