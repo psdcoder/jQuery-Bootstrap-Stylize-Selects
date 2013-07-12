@@ -1,6 +1,6 @@
 //Throttle method from underscore.js
 
-function throttle (func, wait, options) {
+function throttle(func, wait, options) {
     var context, args, result;
     var timeout = null;
     var previous = 0;

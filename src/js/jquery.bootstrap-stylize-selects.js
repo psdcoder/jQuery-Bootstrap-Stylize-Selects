@@ -1,6 +1,6 @@
 //Throttle method from underscore.js
 
-function throttle (func, wait, options) {
+function throttle(func, wait, options) {
     var context, args, result;
     var timeout = null;
     var previous = 0;
@@ -30,9 +30,10 @@ function throttle (func, wait, options) {
 (function ($) {
     var options,
         defaults = {
-            width: 'auto', // 'auto' - means displays as inline-block || 'block' - displays as block element || '100px' - size
+            width: 'auto', // 'auto' - means displays as inline-block || 'block' - displays as block element || '100' - size in pixels
             autoResize: true, // auto resize height of dropdown when fired window.onresize or window.onscroll events
-            dropdownMaxHeight: 'auto', // 'auto' || '200px' - size
+            dropdownMaxHeight: 'auto', // 'auto' || '200' - size in pixels
+            dropdownMinHeight: 80,
             style: null, // 'info' || 'primary' || 'warning' || 'danger' || 'success' || 'inverse'
             notStyleList: false, // stylize also dropdown items or not
             size: null, // 'large', 'small', 'mini'
@@ -50,6 +51,7 @@ function throttle (func, wait, options) {
                 additionalDropdownClass = (options.style !== null && !options.notStyleList) ? ' items-' + options.style : '';
 
             dropdown.className = 'dropdown-menu' + additionalDropdownClass;
+            dropdown.style.minHeight = options.dropdownMinHeight + 'px';
 
             if (options.dropdownMaxHeight !== 'auto') {
                 dropdown.style.maxHeight = options.dropdownMaxHeight + 'px';
@@ -129,7 +131,8 @@ function throttle (func, wait, options) {
         },
         bindHandlers: function () {
             var $newSelect = $('.' + mainClass),
-                $dropdown = $('.dropdown-menu', $newSelect);
+                $dropdown = $('.dropdown-menu', $newSelect),
+                self = this;
 
             $dropdown.on('click' + '.' + namespace, 'a', function (e) {
                 var $this = $(this),
@@ -157,28 +160,50 @@ function throttle (func, wait, options) {
                 }
             });
 
+            // check dropdown height when user opens it
+            $newSelect.on('click', '.dropdown-toggle', function() {
+               if (!$(this).parent().hasClass('open')) {
+                   self.setMaxHeight(true);
+               }
+            });
+
             if (options.autoResize) {
-                this.setMaxHeight();
+
+                //console.log($('body').css('overflow','hidden'));
+                this.setMaxHeight(true);
+               // $('body').css('overflow','auto');
 
                 $(window).on(
                     'scroll' + '.' + namespace + ' resize' + '.' + namespace,
-                    throttle(this.setMaxHeight, 300)
+                    throttle(this.setMaxHeight, 150)
                 );
             }
         },
-        setMaxHeight: function() {
-            var $dropdown =  $('.dropdown-menu', $('.' + mainClass)),
-                windowHeight = $(window).height(),
-                dropdownHeight = $dropdown.height(),
-                dropdownMargins = $dropdown.outerHeight() - dropdownHeight,
-                dropdownOffset = $dropdown.offset(),
-                toBottom = windowHeight - dropdownHeight - dropdownMargins - dropdownOffset.top;
+        setMaxHeight: function(necessarily) {
+            var $fullDropdown = $('.' + mainClass);
 
-            if (toBottom <= 0) {
-                $dropdown.css('maxHeight', windowHeight - dropdownOffset.top - dropdownMargins);
-            } else if (toBottom + dropdownHeight < options.dropdownMaxHeight) {
-                console.log('aaaa');
-                $dropdown.css('maxHeight', options.dropdownMaxHeight);
+            if ($fullDropdown.hasClass('open') || (typeof necessarily === 'boolean' && necessarily)) {
+                var $dropdown = $('.dropdown-menu', $fullDropdown),
+                    windowHeight = $(window).height(),
+                    dropdownHeight = $dropdown.height(),
+                    dropdownOffsetTop = $fullDropdown.offset().top + $fullDropdown.outerHeight(),
+                    toBottom = windowHeight - dropdownOffsetTop - dropdownHeight;
+
+                if (toBottom <= 0 && dropdownHeight > options.dropdownMinHeight) {
+                    $dropdown.css('maxHeight', windowHeight - dropdownOffsetTop);
+                } else {
+                    var toBottomBiggerThanDropdown = windowHeight - dropdownOffsetTop > options.dropdownMaxHeight;
+
+                    //if max height is 'auto'
+                    if (isNaN(parseInt(options.dropdownMaxHeight, 10)) && toBottomBiggerThanDropdown) {
+                        $dropdown.css('maxHeight', 'auto');
+                    } else if (toBottomBiggerThanDropdown){
+                        $dropdown.css('maxHeight', options.dropdownMaxHeight);
+                    } else {
+                        $dropdown.css('maxHeight', windowHeight - dropdownOffsetTop);
+                    }
+
+                }
             }
         },
         getItemByValue: function (context, value) {
@@ -236,7 +261,7 @@ function throttle (func, wait, options) {
                             mainContainerAdditionalClass = ' btn-group-block';
                             break;
                         default:
-                            mainContainer.style.width = options.width;
+                            mainContainer.style.width = options.width + 'px';
                     }
                     dropdownToggleAdditionalClass += options.size === null ? '' : ' btn-' + options.size;
                     dropdownToggleAdditionalClass += this.disabled ? ' disabled' : '';
