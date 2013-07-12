@@ -146,7 +146,7 @@
 
                 $(window).on(
                     'scroll' + '.' + namespace + ' resize' + '.' + namespace,
-                    throttle(this.setMaxHeight, 150)
+                    throttle(this.setMaxHeight, 100)
                 );
             }
         },
@@ -171,9 +171,10 @@
                     } else if (toBottomBiggerThanDropdown){
                         $dropdown.css('maxHeight', options.dropdownMaxHeight);
                     } else {
-                        $dropdown.css('maxHeight', windowHeight - dropdownOffsetTop);
+                        if ((windowHeight - dropdownOffsetTop) > options.dropdownMinHeight) {
+                            $dropdown.css('maxHeight', windowHeight - dropdownOffsetTop);
+                        }
                     }
-
                 }
             }
         },
